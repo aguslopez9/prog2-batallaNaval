@@ -3,4 +3,4 @@ project(sudoku)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(sudoku main.cpp bNaval.h bNaval.cpp)
+add_executable(sudoku main.cpp tablero.h tablero.cpp)
