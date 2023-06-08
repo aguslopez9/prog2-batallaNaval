@@ -8,8 +8,6 @@
 #include <string>
 
 
-
-
 class tablero {
 private:
     int f, c;
@@ -29,25 +27,18 @@ public:
 };
 class barcos : public tablero{
 private:
-    int numeroBarco, tamBarco, coordX, coordY;
-    std::string direccion;
+    std::string coordenadas;
 public:
     barcos();
-    barcos(int numeroBarco, int coordX, int coordY, int tamBarco, std::string direccion, int f, int c);
+    barcos(std::string coordenadas, int f, int c);
 
-    void setNumeroBarco(int _numeroBarco) {numeroBarco = _numeroBarco;}
-    void setTamBarco(int _tamBarco) {tamBarco = _tamBarco;}
-    void setCoordX(int _coordX) {coordX = _coordX;}
-    void setCoordXY(int _coordY) {coordY = _coordY;}
-    void setDireccion(std::string _direccion) {direccion = _direccion;}
+    void setCoordenadas(std::string _coordenadas) { coordenadas = _coordenadas;}
 
-    int getNumeroBarco(){return numeroBarco;}
-    int getTamBarco(){return tamBarco;}
-    int getCoordX() {return coordX;}
-    int getCoordY() {return coordY;}
-    std::string getDireccion() {return direccion;}
+    std::string getCoordenadas() {return coordenadas;}
 
-    void ubicarBarcos();
+    void verificarBarcos();
+    void ubicarBarcos(std::string coordenadas, int f, int c);
+
 };
 
 class jugador : public tablero{
@@ -57,14 +48,9 @@ public:
     jugador();
     jugador(std::string nombre, int f, int c);
 
-    void setNombre(std::string _nombre) {nombre=_nombre;}
-    std::string getNombre(){return nombre;}
+    barcos B;
 
-    void ingresarNombre();
 };
-
-
-
 
 
 #endif //SUDOKU_TABLERO_H
