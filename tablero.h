@@ -4,7 +4,7 @@
 
 #ifndef SUDOKU_TABLERO_H
 #define SUDOKU_TABLERO_H
-
+#include <vector>
 #include <string>
 
 
@@ -33,20 +33,24 @@ public:
     barcos(std::string coordenadas, int f, int c);
 
     void setCoordenadas(std::string _coordenadas) { coordenadas = _coordenadas;}
-
     std::string getCoordenadas() {return coordenadas;}
 
-    void verificarBarcos();
-    void ubicarBarcos(std::string coordenadas, int f, int c);
+    void ingresarBarcos(int, int**);
+    bool verificarCoordenadas(std::string);
+    void prepararCoordenadas(std::string, int**);
+    void ubicarBarcos(int, int, int, int, int, int);
 
 };
 
 class jugador : public tablero{
-private:
-    std::string nombre;
+
 public:
     jugador();
-    jugador(std::string nombre, int f, int c);
+    jugador(int f, int c);
+
+    void generarMatrizJugador(int, int);
+    void mostrarMatrizJugador(int, int);
+
 
     barcos B;
 

@@ -3,26 +3,23 @@
 using namespace std;
 
 void verificarMinimo(int*, int*);
-int ingresarBarcos(int*, int*, std::string*, int);
-bool verificarCoordenadas(std::string);
 
 int main() {
-    barcos B1;
-    barcos B2;
+    jugador J1;
+    jugador J2;
     tablero t(0,0);
     int filas=0, columnas=0;
-    std::string coordenadas;
     int op;
     do {
-        std::cout << "---------------------------------" << std::endl;
-        std::cout << "-------- Menu de opciones -------" << std::endl;
-        std::cout << "---------------------------------" << std::endl;
-        std::cout << "--------- 1. J1 vs J2 -----------" << std::endl;
-        std::cout << "--------- 2. J vs CPU -----------" << std::endl;
-        std::cout << "----------- 0. SALIR ------------" << std::endl;
-        std::cout << "---------------------------------" << std::endl;
-        std::cout << "Ingrese una opcion:";
-        std::cin >> op;
+        cout << "---------------------------------" << endl;
+        cout << "-------- Menu de opciones -------" << endl;
+        cout << "---------------------------------" << endl;
+        cout << "--------- 1. J1 vs J2 -----------" << endl;
+        cout << "--------- 2. J vs CPU -----------" << endl;
+        cout << "----------- 0. SALIR ------------" << endl;
+        cout << "---------------------------------" << endl;
+        cout << "Ingrese una opcion:";
+        cin >> op;
 
         switch (op) {
             case 1:
@@ -35,13 +32,13 @@ int main() {
                         "- 1 barcos de 4 casillas\n"
                         "Los barcos no pueden superponerse!"<< endl;
                 cout << "JUGADOR 1" << endl;
-                for (int i = 0; i < 7; ++i) {
-                    ingresarBarcos(&filas, &columnas, &coordenadas, i+1);
-                    B1.ubicarBarcos(coordenadas, filas, columnas);
+                J1.generarMatrizJugador(filas, columnas);
+                for (int i = 1; i <= 7; ++i) {
+                    ingresarBarcos(filas, columnas, i);
                 }
-                for (int i = 0; i < 7; ++i) {
-                    ingresarBarcos(&filas, &columnas, &coordenadas, i+1);
-                    B2.ubicarBarcos(coordenadas, filas, columnas);
+                J2.generarMatrizJugador(filas, columnas);
+                for (int i = 1; i < 7; ++i) {
+                    J2.ingresarBarcos(filas, columnas, i);
                 }
                 break;
             case 2:
@@ -68,74 +65,4 @@ void verificarMinimo(int *filas, int *columnas) {
         cout << "Ingrese las columnas del tablero:";
         cin >> *columnas;
     }
-}
-
-int ingresarBarcos(int *filas, int *columnas, std::string *coordenadas, int i) {
-    int f = *filas;
-    int c = *columnas;
-    std::string cord = *coordenadas;
-    if (i == 1) {
-        cout << "Barco de 1 casilla" << endl;
-        cout << "Coordenadas (Ej: A1):";
-        cin >> *coordenadas;
-        *coordenadas = *coordenadas + *coordenadas;
-        while(!verificarCoordenadas(*coordenadas)){
-            cout << "Barco de 1 casilla" << endl;
-            cout << "Coordenadas (Ej: A1):";
-            cin >> *coordenadas;
-            *coordenadas = *coordenadas + *coordenadas;
-        }
-    } else if (i > 1 and i < 4) {
-        cout << "Barco de 2 casillas" << endl;
-        cout << "Coordenadas Inicial-Final (Ej: A1A2):";
-        cin >> *coordenadas;
-        while(!verificarCoordenadas(*coordenadas)){
-            cout << "Barco de 2 casillas" << endl;
-            cout << "Coordenadas Inicial-Final (Ej: A1A2):";
-            cin >> *coordenadas;
-        }
-
-    } else if (i > 4 and i < 6) {
-        cout << "Barco de 3 casillas" << endl;
-        cout << "Coordenadas Inicial-Final (Ej: A1A3):";
-        cin >> *coordenadas;
-        while(!verificarCoordenadas(*coordenadas)){
-            cout << "Barco de 3 casillas" << endl;
-            cout << "Coordenadas Inicial-Final (Ej: A1A3):";
-            cin >> *coordenadas;
-        }
-    } else {
-        cout << "Barco de 4 casillas" << endl;
-        cout << "Coordenada Inicial-Final (Ej: A1A4):";
-        cin >> *coordenadas;
-        while(!verificarCoordenadas(*coordenadas)){
-            cout << "Barco de 4 casillas" << endl;
-            cout << "Coordenada Inicial-Final (Ej: A1A4):";
-            cin >> *coordenadas;
-        }
-    }
-
-}
-
-bool verificarCoordenadas(std::string coordenadas) {
-    if (coordenadas.length() < 4 || coordenadas.length() > 6) {
-        return false;
-    }
-
-    bool valido = true;
-
-    for (int i = 0; i < coordenadas.length(); i++) {
-        if (i % 2 == 0) {
-            if (!isalpha(coordenadas[i])) {
-                valido = false;
-                break;
-            }
-        } else {
-            if (!isdigit(coordenadas[i])) {
-                valido = false;
-                break;
-            }
-        }
-    }
-    return valido;
 }
