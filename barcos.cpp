@@ -6,6 +6,7 @@
 #include "tablero.h"
 #include <string>
 #include <cmath>
+
 using namespace std;
 
 barcos::barcos() : barcos("",0,0){}
@@ -14,23 +15,29 @@ barcos::barcos(std::string _coordenadas,int _f, int _c)
     coordenadas = _coordenadas;
 }
 bool barcos::verificarCadena(std::string coordenadas) {
-    int letras = 0, numeros = 0;
+    int letrasSeguidas = 0, numerosSeguidos = 0 ,letras=0, numeros=0;
     if (coordenadas.length() < 4 || coordenadas.length() > 6) {
         return false;
     }
     if (!isalpha(coordenadas[0])){
         return false;
     }
+    if (isalpha(coordenadas[-1])){
+        return false;
+    }
 
     for (int i = 1; i < coordenadas.length(); ++i) {
         if (isalpha(coordenadas[i])){
             letras++;
-            numeros = 0;
+            letrasSeguidas++;
+            numerosSeguidos = 0;
         } else if (isdigit(coordenadas[i])){
             numeros++;
-            letras = 0;
+            numerosSeguidos++;
+            letrasSeguidas = 0;
         }
-        if (letras > 1 || numeros > 2) {
+
+        if (letrasSeguidas > 1 || numerosSeguidos > 2 || letras > 2 || numeros > 4) {
             return false;
         }
     }
@@ -70,6 +77,9 @@ bool barcos::verificarCoordenadas(std::string _coordenadas, int f, int c, int* x
     *yFn = std::stoi(yF);
 
 
+    if (*xIn > *xFn || *yIn > *yFn){
+        return false;
+    }
     if ((*xIn < 0 || *xIn > c) || (*xFn < 0 || *xFn > c)){
         return false;
     }
@@ -98,4 +108,12 @@ bool barcos::verificarCoordenadas(std::string _coordenadas, int f, int c, int* x
     }
     return true;
 
+}
+
+bool barcos::verificarSuperpuestos(int ** matriz, int* xi, int* xf, int* yi, int* yf) {
+
+    if ((matriz[*yi-1][*xi-1] != 0) || (matriz[*yf-1][*xf-1] != 0)) {
+        return false;
+    }
+    return true;
 }

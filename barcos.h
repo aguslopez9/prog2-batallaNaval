@@ -18,7 +18,7 @@ public:
 
     bool verificarCadena(std::string);
     bool verificarCoordenadas(std::string, int, int, int*, int*, int*, int*, int);
-
+    bool verificarSuperpuestos(int**, int*, int*, int*, int*);
 
 };
 

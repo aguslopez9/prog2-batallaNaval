@@ -13,7 +13,7 @@ tablero::tablero(int _f, int _c) {
     c = _c;
 }
 
-void tablero::mostrarTablero(int _f, int _c, int** matriz) {
+void tablero::mostrarTablero(int _f, int _c, int** matriz, int tipo) {
     std::string columnas = "|";
     std::string filas = "---+";
     cout << "  |";
@@ -30,8 +30,8 @@ void tablero::mostrarTablero(int _f, int _c, int** matriz) {
     for (int i = 0; i < _f; ++i) {
         cout << i + 1 << " |";
         for (int j = 0; j < _c; ++j) {
-            if ((matriz[i][j]) == 1) {
-                cout << " X " << columnas;
+            if ((matriz[i][j]) != 0) {
+                cout << " "<<matriz[i][j]<<" " << columnas;
             } else {
                 cout << "   " << columnas;
             }
@@ -57,22 +57,16 @@ int** tablero::matriz(int _f, int _c) {
     return matriz;
 }
 
-void tablero::actualizarMatriz(int ** matriz, int _f, int _c, int* xi, int* xf, int* yi, int* yf) {
+void tablero::actualizarMatriz(int ** matriz, int _f, int _c, int* xi, int* xf, int* yi, int* yf, int tipo) {
     for (int i = 0; i < _c; ++i) {
         for (int j = 0; j < _f; ++j) {
             if (j + 1 >= *yi && j + 1 <= *yf && i + 1 >= *xi && i + 1 <= *xf) {
-                matriz[j][i] = 1;
+                matriz[j][i] = tipo;
             }
         }
     }
-    for (int i = 0; i < _f; ++i) {
-        for (int j = 0; j < _c; ++j) {
-            cout << matriz[i][j] << " ";
-        }
-        cout << endl;
-    }
 
-    mostrarTablero(_f, _c, matriz);
+    mostrarTablero(_f, _c, matriz, tipo);
 }
 
 
