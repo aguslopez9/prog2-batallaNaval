@@ -15,8 +15,8 @@ public:
     jugador();
     jugador(std::string coordenadas);
 
-    bool verificarDisparo(std::string);
-    bool disparar(int**, int**,std::string);
+    bool verificarDisparo(std::string, int, int, int*, int*);
+    bool disparar(int**, int**, int*, int*);
 
     tablero t;
 };

@@ -9,13 +9,14 @@ using namespace std;
 void verificarMinimo(int*, int*);
 void ingresarCoordenadas(int, std::string*, int*);
 void mostrarMatriz(int **, int, int);
-void coordenadasCPU(int, std::string*, int*, int);
+void coordenadasCPU(int, int*, int, int, int*, int*, int*, int*);
+void tirosCpu(int,int,int*,int*);
 
 int main() {
     tablero t1(0,0); tablero t2(0,0); tablero tcpu(0,0);
     barcos b1; barcos b2; barcos bcpu;
     jugador j1; jugador j2; jugador cpu;
-    int filas=0, columnas=0, xi, xf, yi, yf, tipoBarco, aciertos1 =0, aciertos2 =0;
+    int filas=0, columnas=0, xi, xf, yi, yf, tipoBarco, aciertos1 =0, aciertos2 =0, aciertosCpu=0;
     int** matriz1; int** matriz2; int** matrizCpu ;int** disparos1; int** disparos2; int** disparosCpu;
     std::string coord;
     int op;
@@ -32,7 +33,7 @@ int main() {
         verificarMinimo(&filas, &columnas);
         matriz1 = t1.matriz(filas, columnas); matriz2 = t2.matriz(filas, columnas); matrizCpu = tcpu.matriz(filas, columnas);
         disparos1 = t1.matriz(filas, columnas); disparos2 = t2.matriz(filas, columnas); disparosCpu = tcpu.matriz(filas,columnas);
-        t1.mostrarTablero(filas, columnas, matriz1, tipoBarco=5);
+        mostrarMatriz(matriz1, filas, columnas);
         cout << "Distribuir en el tablero 7 barcos por cada jugador.\n"
                 "- 1 lancha '1' (1 casilla),\n"
                 "- 2 buques '2' (2 casillas),\n"
@@ -44,116 +45,126 @@ int main() {
                 cout << "---------- JUGADOR 1 ----------" << endl;
                 for (int i = 1; i < 8; ++i) {
                     ingresarCoordenadas(i, &coord, &tipoBarco);
-                    while (!b1.verificarCadena(coord) || (!b1.verificarCoordenadas(coord, filas, columnas, &xi, &xf, &yi, &yf, i)) || (!b1.verificarSuperpuestos(matriz1, &xi, &xf, &yi, &yf))){
+                    while (!b1.verificarCadena(coord, &tipoBarco) || (!b1.verificarCoordenadas(coord, filas, columnas, &xi, &xf, &yi, &yf, i)) || (!b1.verificarSuperpuestos(matriz1, &xi, &xf, &yi, &yf, &tipoBarco))){
                         cout << "Ingrese las coordenadas nuevamente:" << endl;
                         cin >> coord;
-                        b1.verificarCadena(coord);
                     }
                     t1.actualizarMatriz(matriz1, filas, columnas, &xi, &xf, &yi, &yf, tipoBarco);
+                    mostrarMatriz(matriz1, filas, columnas);
                 }
                 cout << "--------------------------------------" << endl;
-                cout << "---------- JUGADOR 2 ----------" << endl;
-                t2.mostrarTablero(filas, columnas, matriz2, tipoBarco=5);
+                cout << "------------- JUGADOR 2 --------------" << endl;
+                mostrarMatriz(matriz2, filas, columnas);
 
                 for (int i = 1; i < 8; ++i) {
                     ingresarCoordenadas(i, &coord, &tipoBarco);
-                    while (!b2.verificarCadena(coord) || (!b2.verificarCoordenadas(coord, filas, columnas, &xi, &xf, &yi, &yf, i))|| (!b2.verificarSuperpuestos(matriz2, &xi, &xf, &yi, &yf))){
+                    while (!b2.verificarCadena(coord, &tipoBarco) || (!b2.verificarCoordenadas(coord, filas, columnas, &xi, &xf, &yi, &yf, i))|| (!b2.verificarSuperpuestos(matriz2, &xi, &xf, &yi, &yf, &tipoBarco))){
                         cout << "Ingrese las coordenadas nuevamente:" << endl;
                         cin >> coord;
-                        b2.verificarCadena(coord);
                     }
                     t2.actualizarMatriz(matriz2, filas, columnas, &xi, &xf, &yi, &yf, tipoBarco);
+                    mostrarMatriz(matriz2, filas, columnas);
                 }
                 //empiezan a disparar
                 cout << "---------- A JUGAR ----------" << endl;
                 while (aciertos1 < 18 && aciertos2 < 18) {
-                    cout << "---------- DISPARA J1 ----------" << endl;
+                    cout << "-------------- DISPARA J1 --------------" << endl;
                     cout << "Ingrese las coordenadas del disparo!:";
                     cin >> coord;
-                    while (!(j1.verificarDisparo(coord))) {
+                    while (!(j1.verificarDisparo(coord, filas, columnas, &xi, &yi))) {
                         cout << "Ingrese las coordenadas nuevamente:";
                         cin >> coord;
-                        j1.verificarDisparo(coord);
                     }
-                    if (j1.disparar(disparos1, matriz2, coord)) {
+                    if (j1.disparar(disparos1, matriz2, &xi, &yi)) {
                         mostrarMatriz(disparos1, filas, columnas);
                         aciertos1++;
+                    } else {
+                        cout << "AGUA! (7)" << endl;
+                        mostrarMatriz(disparos1, filas, columnas);
                     }
-                    cout << "---------- DISPARA J2 ----------" << endl;
+                    if (aciertos1 == 18){
+                        cout << "GANA J1!";
+                        break;
+                    }
+                    cout << "-------------- DISPARA J2 --------------" << endl;
                     cout << "Ingrese las coordenadas del disparo!:";
                     cin >> coord;
-                    while (!(j2.verificarDisparo(coord))) {
+                    while (!(j2.verificarDisparo(coord, filas, columnas, &xi, &yi))) {
                         cout << "Ingrese las coordenadas nuevamente:";
                         cin >> coord;
-                        j2.verificarDisparo(coord);
                     }
-                    if (j2.disparar(disparos2, matriz1, coord)) {
-                        mostrarMatriz(disparos1, filas, columnas);
+                    if (j2.disparar(disparos2, matriz1, &xi, &yi)) {
+                        mostrarMatriz(disparos2, filas, columnas);
                         aciertos2++;
                     }
-                }
-                    if (aciertos1 == 18){
-                    cout << "GANA J1!";
+                    else {
+                        cout << "AGUA! (7)" << endl;
+                        mostrarMatriz(disparos2, filas, columnas);
                     }
-                    else if (aciertos2 == 18){
+                    if (aciertos2 == 18) {
                         cout << "GANA J2";
+                        break;
                     }
+                }
                 break;
             case 2:
                 cout << "---------- JUGADOR 1 ----------" << endl;
                 for (int i = 1; i < 8; ++i) {
                     ingresarCoordenadas(i, &coord, &tipoBarco);
-                    while (!b1.verificarCadena(coord) || (!b1.verificarCoordenadas(coord, filas, columnas, &xi, &xf, &yi, &yf, i)) || (!b1.verificarSuperpuestos(matriz1, &xi, &xf, &yi, &yf))){
+                    while (!b1.verificarCadena(coord, &tipoBarco) || (!b1.verificarCoordenadas(coord, filas, columnas, &xi, &xf, &yi, &yf, i)) || (!b1.verificarSuperpuestos(matriz1, &xi, &xf, &yi, &yf, &tipoBarco))){
                         cout << "Ingrese las coordenadas nuevamente:" << endl;
                         cin >> coord;
-                        b1.verificarCadena(coord);
                     }
                     t1.actualizarMatriz(matriz1, filas, columnas, &xi, &xf, &yi, &yf, tipoBarco);
+                    mostrarMatriz(matriz1, filas, columnas);
                 }
+                cout << "-------------------------" << endl;
+                cout << "---------- CPU ----------" << endl;
+                cout << "Ubicando barcos..."<< endl;
                 for (int i = 1; i < 8; ++i) {
-                    cout << "Ubicando barco n" << i << endl;
-                    coordenadasCPU(i, &coord, &tipoBarco, filas);
-                    cout << coord << endl;
-                    while (!bcpu.verificarCadena(coord) || (!bcpu.verificarCoordenadas(coord, filas, columnas, &xi, &xf, &yi, &yf, i))|| (!bcpu.verificarSuperpuestos(matriz2, &xi, &xf, &yi, &yf))){
-                        coordenadasCPU(i, &coord, &tipoBarco, filas);
-                        bcpu.verificarCadena(coord);
+                    coordenadasCPU(i, &tipoBarco, filas, columnas, &xi, &xf, &yi, &yf);
+                    while (!bcpu.verificarSuperpuestos(matrizCpu, &xi, &xf, &yi, &yf, &tipoBarco)){
+                        coordenadasCPU(i, &tipoBarco, filas, columnas, &xi, &xf, &yi, &yf);
                     }
                     tcpu.actualizarMatriz(matrizCpu, filas, columnas, &xi, &xf, &yi, &yf, tipoBarco);
                 }
-
-                cout << "---------- A JUGAR ----------" << endl;
-                while (aciertos1 < 18 && aciertos2 < 18) {
-                    cout << "---------- DISPARA J1 ----------" << endl;
+                mostrarMatriz(matrizCpu, filas, columnas);
+                cout << "-------------- A JUGAR --------------" << endl;
+                while (aciertos1 < 18 && aciertosCpu < 18) {
+                    cout << "-------------- DISPARA J1 --------------" << endl;
                     cout << "Ingrese las coordenadas del disparo!:";
                     cin >> coord;
-                    while (!(j1.verificarDisparo(coord))) {
+                    while (!(j1.verificarDisparo(coord, filas, columnas, &xi, &yi))) {
                         cout << "Ingrese las coordenadas nuevamente:";
                         cin >> coord;
-                        j1.verificarDisparo(coord);
                     }
-                    if (j1.disparar(disparos1, matriz2, coord)) {
+                    if (j1.disparar(disparos1, matrizCpu, &xi, &yi)) {
                         mostrarMatriz(disparos1, filas, columnas);
                         aciertos1++;
-                    }
-                    cout << "---------- DISPARA J2 ----------" << endl;
-                    cout << "Ingrese las coordenadas del disparo!:";
-                    cin >> coord;
-                    while (!(j2.verificarDisparo(coord))) {
-                        cout << "Ingrese las coordenadas nuevamente:";
-                        cin >> coord;
-                        j2.verificarDisparo(coord);
-                    }
-                    if (j2.disparar(disparos2, matriz1, coord)) {
+                    } else {
+                        cout << "AGUA! (7)" << endl;
                         mostrarMatriz(disparos1, filas, columnas);
-                        aciertos2++;
+                    }
+                    if (aciertos1 == 18){
+                        cout << "GANA J1!";
+                        break;
+                    }
+                    cout << "-------------- DISPARA CPU --------------" << endl;
+                    tirosCpu(filas, columnas , &xi, &yi);
+                    if ((matriz1[yi - 1][xi - 1] != 0)) {
+                        disparosCpu[yi - 1][xi - 1] = matriz1[yi - 1][xi - 1];
+                        mostrarMatriz(disparosCpu, filas, columnas);
+                        aciertosCpu++;
+                    } else {
+                        cout << "AGUA! (7)" << endl;
+                        disparosCpu[yi - 1][xi - 1] = 7;
+                    }
+                    if (aciertosCpu == 18){
+                        cout << "GANA CPU";
+                        break;
                     }
                 }
-                if (aciertos1 == 18){
-                    cout << "GANA J1!";
-                }
-                else if (aciertos2 == 18){
-                    cout << "GANA J2";
-                }
+
                 break;
             case 0:
                 break;
@@ -167,12 +178,21 @@ int main() {
         delete[] matriz1[i];
     }
     delete[] matriz1;
+    for (int i = 0; i < filas; ++i) {
+        delete[] matriz2[i];
+    }
+    delete[] matriz2;
+    for (int i = 0; i < filas; ++i) {
+        delete[] matrizCpu[i];
+    }
+    delete[] matrizCpu;
 
     return 0;
 }
 
+
 void verificarMinimo(int *filas, int *columnas) {
-    while ((*filas < 9) && (*columnas < 9)){
+    while ((*filas < 9) || (*columnas < 9)){
         cout << "El tablero debe ser de minimo 9x9!" << endl;
         cout << "Ingrese las filas del tablero:";
         cin >> *filas;
@@ -216,36 +236,32 @@ void ingresarCoordenadas(int i, std::string *coordenadas, int * tipoBarco) {
 
 }
 
-void coordenadasCPU(int i, std::string *coordenadas, int * tipoBarco, int filas){
+void coordenadasCPU(int i, int * tipo, int filas, int columnas, int* xi, int* xf, int* yi,int* yf){
     srand(time(NULL));
-
-    char xi = 'A' + rand() % 26;
-    int yi = 1 + rand() % (filas - 1);
-
-    std::string cadena = xi + std::to_string(yi);
-    switch (i) {
-        case 1:
-            *coordenadas = cadena = xi + std::to_string(yi) + xi + std::to_string(yi);;
-            *tipoBarco = 1;
-            break;
-        case 2:
-        case 3:
-            *coordenadas = cadena;
-            *tipoBarco = 2;
-            break;
-        case 4:
-        case 5:
-        case 6:
-            *coordenadas = cadena;
-            *tipoBarco = 3;
-            break;
-        case 7:
-            *coordenadas = cadena;
-            *tipoBarco = 4;
-            break;
-        default:
-            break;
+    if (i==1){
+        *tipo = 1;
+    } else if (i == 2 || i == 3){
+        *tipo = 2;
+    } else if (i==4||i==5||i==6){
+        *tipo = 3;
+    } else {
+        *tipo = 4;
     }
+    *xi = 1 + rand() % (columnas-*tipo);
+    *yi = 1 + rand() % (filas-*tipo);
+    *xf = *xi + rand() % (*tipo);
+    *yf = *yi + rand() % (*tipo);
+    if (*tipo > 1) {
+        while ((*xi == *xf && *yi == *yf) || (*xi != *xf && *yi != *yf) || (::abs(*xi-*xf) != (*tipo-1)) && (::abs(*yi-*yf) != (*tipo-1))){
+            *xf = *xi + rand() % (*tipo);
+            *yf = *yi + rand() % (*tipo);
+        }
+    }
+}
+
+void tirosCpu(int filas, int columnas, int* xi, int* yi) {
+    *xi = 1 + rand() % (columnas);
+    *yi = 1 + rand() % (filas);
 }
 
 void mostrarMatriz(int ** matriz, int f, int c){

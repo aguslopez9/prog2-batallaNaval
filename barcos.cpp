@@ -2,10 +2,12 @@
 // Created by agust on 11/6/2023.
 //
 
+#include <iostream>
 #include "barcos.h"
 #include "tablero.h"
 #include <string>
-#include <cmath>
+#include <cstdlib>
+#include <cctype>
 
 using namespace std;
 
@@ -14,19 +16,16 @@ barcos::barcos(std::string _coordenadas,int _f, int _c)
 : tablero(_f, _c){
     coordenadas = _coordenadas;
 }
-bool barcos::verificarCadena(std::string coordenadas) {
+bool barcos::verificarCadena(std::string coordenadas, int * tipo) {
     int letrasSeguidas = 0, numerosSeguidos = 0 ,letras=0, numeros=0;
     if (coordenadas.length() < 4 || coordenadas.length() > 6) {
         return false;
     }
-    if (!isalpha(coordenadas[0])){
-        return false;
-    }
-    if (isalpha(coordenadas[-1])){
+    if (!isalpha(coordenadas[0]) || isalpha(coordenadas[coordenadas.length()-1])){
         return false;
     }
 
-    for (int i = 1; i < coordenadas.length(); ++i) {
+    for (int i = 0; i < coordenadas.length(); ++i) {
         if (isalpha(coordenadas[i])){
             letras++;
             letrasSeguidas++;
@@ -36,8 +35,7 @@ bool barcos::verificarCadena(std::string coordenadas) {
             numerosSeguidos++;
             letrasSeguidas = 0;
         }
-
-        if (letrasSeguidas > 1 || numerosSeguidos > 2 || letras > 2 || numeros > 4) {
+        if (letrasSeguidas > 1 || letras > 2){
             return false;
         }
     }
@@ -71,10 +69,10 @@ bool barcos::verificarCoordenadas(std::string _coordenadas, int f, int c, int* x
         }
     }
 
-    *xIn = std::stoi(xI);
-    *xFn = std::stoi(xF);
-    *yIn = std::stoi(yI);
-    *yFn = std::stoi(yF);
+    *xIn = stoi(xI);
+    *xFn = stoi(xF);
+    *yIn = stoi(yI);
+    *yFn = stoi(yF);
 
 
     if (*xIn > *xFn || *yIn > *yFn){
@@ -110,10 +108,28 @@ bool barcos::verificarCoordenadas(std::string _coordenadas, int f, int c, int* x
 
 }
 
-bool barcos::verificarSuperpuestos(int ** matriz, int* xi, int* xf, int* yi, int* yf) {
-
-    if ((matriz[*yi-1][*xi-1] != 0) || (matriz[*yf-1][*xf-1] != 0)) {
+bool barcos::verificarSuperpuestos(int** matriz, int* xi, int* xf, int* yi, int* yf, int* tipo) {
+    if ((matriz[*yi - 1][*xi - 1] != 0) || (matriz[*yf - 1][*xf - 1] != 0)) {
         return false;
     }
+
+    if (*tipo > 2) {
+        if (*xi == *xf) {
+            for (int y = *yi - 1; y <= *yf - 1; ++y) {
+                if (matriz[y][*xi - 1] != 0) {
+
+                    return false;
+                }
+            }
+        } else if (*yi == *yf) {
+            for (int x = *xi - 1; x <= *xf - 1; ++x) {
+                if (matriz[*yi - 1][x] != 0) {
+
+                    return false;
+                }
+            }
+        }
+    }
+
     return true;
 }

@@ -23,7 +23,6 @@ public:
 
     int** matriz(int, int);
     void actualizarMatriz(int**, int, int, int*, int*, int*, int*, int);
-    void mostrarTablero(int, int, int**, int);
 
 };
 

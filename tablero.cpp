@@ -13,38 +13,6 @@ tablero::tablero(int _f, int _c) {
     c = _c;
 }
 
-void tablero::mostrarTablero(int _f, int _c, int** matriz, int tipo) {
-    std::string columnas = "|";
-    std::string filas = "---+";
-    cout << "  |";
-    for (char col = 'A'; col < 'A' + _c; ++col) {
-        cout << " " << col << " |";
-    }
-    cout << endl;
-    cout << "--+";
-    for (int j = 0; j < _c; ++j) {
-        cout << filas;
-    }
-    cout << endl;
-
-    for (int i = 0; i < _f; ++i) {
-        cout << i + 1 << " |";
-        for (int j = 0; j < _c; ++j) {
-            if ((matriz[i][j]) != 0) {
-                cout << " "<<matriz[i][j]<<" " << columnas;
-            } else {
-                cout << "   " << columnas;
-            }
-        }
-        cout << endl;
-        cout << "--+";
-        for (int j = 0; j < _c; ++j) {
-            cout << filas;
-        }
-        cout << endl;
-    }
-}
-
 int** tablero::matriz(int _f, int _c) {
     int** matriz = new int*[_f];
 
@@ -65,8 +33,6 @@ void tablero::actualizarMatriz(int ** matriz, int _f, int _c, int* xi, int* xf, 
             }
         }
     }
-
-    mostrarTablero(_f, _c, matriz, tipo);
 }
 
 

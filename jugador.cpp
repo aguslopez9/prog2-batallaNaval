@@ -12,7 +12,9 @@ jugador::jugador(std::string _coordenadas) {
     coordenadas = _coordenadas;
 }
 
-bool jugador::verificarDisparo(std::string coord) {
+bool jugador::verificarDisparo(std::string coord, int filas, int columnas, int* xi, int* yi) {
+    std::string x = std::to_string((int)std::toupper(coord[0]) - 64);
+    std::string y;
     if (!isalpha(coord[0])){
         return false;
     }
@@ -21,24 +23,29 @@ bool jugador::verificarDisparo(std::string coord) {
             return false;
         }
     }
-    return true;
-}
-bool jugador::disparar(int** disparos, int ** barcos,std::string _coordenadas) {
-    std::string x = std::to_string((int)std::toupper(_coordenadas[0]) - 64);
-    std::string y;
-    for (int i = 1; i < _coordenadas.length(); ++i) {
-        if (isdigit(_coordenadas[i])) {
-            y += _coordenadas[i];
+    for (int i = 1; i < coord.length(); ++i) {
+        if (isdigit(coord[i])) {
+            y += coord[i];
         }
     }
-    int xi = std::stoi(x);
-    int yi = std::stoi(y);
+    *xi = std::stoi(x);
+    *yi = std::stoi(y);
+    if ((*xi<1||*xi>columnas) || (*yi<1||*yi>filas)){
+        return false;
+    }
 
-    if ((barcos[yi - 1][xi - 1] != 0)) {
-        disparos[yi - 1][xi - 1] = barcos[yi - 1][xi - 1];
+    return true;
+}
+bool jugador::disparar(int** disparos, int ** barcos, int* xi, int* yi) {
+
+    if ((barcos[*yi - 1][*xi - 1] != 0)) {
+        disparos[*yi - 1][*xi - 1] = barcos[*yi - 1][*xi - 1];
         return true;
     }
-    return false;
+    else {
+        disparos[*yi - 1][*xi - 1] = 7;
+        return false;
+    }
 }
 
 

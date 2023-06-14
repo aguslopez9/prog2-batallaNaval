@@ -16,9 +16,9 @@ public:
     void setCoordenadas(std::string _coordenadas) { coordenadas = _coordenadas;}
     std::string getCoordenadas() {return coordenadas;}
 
-    bool verificarCadena(std::string);
+    bool verificarCadena(std::string, int*);
     bool verificarCoordenadas(std::string, int, int, int*, int*, int*, int*, int);
-    bool verificarSuperpuestos(int**, int*, int*, int*, int*);
+    bool verificarSuperpuestos(int**, int*, int*, int*, int*, int*);
 
 };
 
